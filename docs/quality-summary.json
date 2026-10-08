@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-08",
+  "lighthouseVersion": "12.8.2",
+  "environment": "Local production Next.js build; Lighthouse mobile defaults",
+  "scores": {
+    "performance": 98,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metrics": {
+    "firstContentfulPaint": "0.9 s",
+    "largestContentfulPaint": "2.5 s",
+    "totalBlockingTime": "0 ms",
+    "cumulativeLayoutShift": "0"
+  },
+  "failedBinaryAudits": []
+}
