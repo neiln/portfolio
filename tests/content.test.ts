@@ -13,13 +13,24 @@ test("public project links never expose a private repository", async () => {
   }
 });
 
-test("source-reviewed projects do not imply verified deployment", async () => {
-  const { projects, getProject } = await import("../src/content/projects");
-  for (const project of projects.filter((p) => p.slug !== "crowhub")) {
-    assert.equal(project.deploymentVerified, false);
-    assert.notEqual(project.status, "In production");
+test("only projects with a live URL are marked Live, and the featured project is live with screenshots", async () => {
+  const { projects, featuredProject, otherProjects, getProject } = await import("../src/content/projects");
+  for (const project of projects) {
+    assert.equal(project.status === "Live", Boolean(project.liveUrl), project.slug);
   }
+  assert.equal(featuredProject.status, "Live");
+  assert.ok(featuredProject.screenshots.length >= 3);
+  assert.equal(otherProjects.length, projects.length - 1);
   assert.equal(getProject("missing-project"), undefined);
+});
+
+test("rendered content does not carry audit language", async () => {
+  const { projects } = await import("../src/content/projects");
+  const { impact, experience } = await import("../src/content/career");
+  const text = JSON.stringify({ projects, impact, experience }).toLowerCase();
+  for (const phrase of ["remain to be", "not independently verified", "supplied brief", "no claim", "source reviewed", "has not been verified", "unverified"]) {
+    assert.ok(!text.includes(phrase), `found "${phrase}"`);
+  }
 });
 
 test("canonical origin is optional and rejects invalid or insecure configuration", async () => {

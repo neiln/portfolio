@@ -23,10 +23,10 @@ npm run start
 - `src/content/site.ts`: contact details, navigation, identity, and résumé URL.
 - `src/content/projects.ts`: typed project records, architecture, capabilities, decisions, status, and links.
 - `src/content/career.ts`: impact stories, leadership, experience, capabilities, and AI workflow.
-- `public/resume/Neil_Nelson_EM_Resume.docx`: download copied from the supplied résumé; the original remains in `resume/`.
-- `docs/content-verification.md`: evidence sources and remaining content gaps.
+- `public/resume/Neil_Nelson_EM_Resume.pdf` and `.docx`: the public résumé. The PDF is rendered from the HTML source in `resume/resume.html`; the DOCX is the original in `resume/` with the summary and Absorb bullets updated to match. Regenerate the PDF with `node scripts/render-resume.mjs`.
+- `docs/content-verification.md`: evidence behind every claim. This stays in docs; the rendered site states facts plainly and does not narrate its own fact-checking (`tests/content.test.ts` enforces that).
 
-To add a project, add a record to `projects.ts`. The gallery, case study route, static parameters, and sitemap consume the model automatically. Features carry `Implemented` or `Planned` states. Use an accurate status and do not add a public source link to a private repository. Screenshots are intentionally absent until authentic approved assets are available; labeled architecture diagrams provide the previews.
+To add a project, add a record to `projects.ts`. The gallery, case study route, static parameters, and sitemap consume the model automatically. Features carry `Implemented` or `Planned` states. Use an accurate status and do not add a public source link to a private repository. CrowHub screenshots in `public/projects/crowhub/` were captured from the live product; other projects use labeled architecture diagrams.
 
 The Manrope variable font is served locally from `public/fonts/` with its OFL license. The font package is retained as the source of those assets. The small social icons use general Lucide symbols because current Lucide releases omit brand marks.
 
@@ -51,8 +51,8 @@ Tests use installed Google Chrome (`channel: "chrome"`). If it is unavailable, i
 ## Deploy
 
 1. Copy `.env.example` to `.env.local` for local configuration, or set the variable in the hosting environment.
-2. Set `NEXT_PUBLIC_SITE_URL` to the actual HTTPS origin of the deployed portfolio before building. Use the origin only, without a path.
-3. Deploy using a Next.js-capable host such as Vercel, or run `npm ci`, `npm run build`, and `npm run start` on a Node host. Provide the host's `PORT` variable if required. Adjust the start hostname to `0.0.0.0` when the host requires a publicly bound process; the default preview binds to localhost.
+2. Set `NEXT_PUBLIC_SITE_URL=https://neil.devraptors.com` in the hosting environment before building. Use the origin only, without a path.
+3. Deploy to Vercel and add a CNAME record at Namecheap for host `neil` on devraptors.com pointing at the target Vercel shows for the domain, or run `npm ci`, `npm run build`, and `npm run start` on a Node host. Provide the host's `PORT` variable if required. Adjust the start hostname to `0.0.0.0` when the host requires a publicly bound process; the default preview binds to localhost.
 4. Check `/robots.txt`, `/sitemap.xml`, `/opengraph-image`, all case study routes, and the résumé download on the final origin.
 
 The app is prepared for hosting, but this task does not publish it. Canonical URLs, the sitemap, and robots' sitemap declaration use the configured origin. If no valid HTTPS origin is configured, canonicals are omitted and the sitemap is empty; Next.js resolves local social image metadata using its local preview fallback. Configure the public origin before release.

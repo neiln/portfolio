@@ -1,23 +1,18 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-import { projects, type Project } from "@/content/projects";
-import { ArchitectureDiagram } from "./architecture";
+import { featuredProject, otherProjects } from "@/content/projects";
 import { Tags } from "./ui";
 
-function ProjectCard({ project, featured = false }: { project: Project; featured?: boolean }) {
-  return <article className={`project-card accent-${project.accent} ${featured ? "featured-project" : ""}`}>
-    <div className="project-preview"><ArchitectureDiagram architecture={project.architecture} name={project.name} compact={!featured}/><span className="preview-label">Architecture preview</span></div>
-    <div className="project-body"><div className="project-meta"><span>{project.category}</span><span className={`status ${project.deploymentVerified ? "status-live" : ""}`}>{project.deploymentVerified && <span />}{project.status}</span></div><h3>{project.name}</h3><p>{project.summary}</p>{featured && <ul className="project-highlights">{["End-to-end product ownership", "Payments & marketplace workflows", "AI-assisted implementation, personally reviewed"].map((text) => <li key={text}><Check size={15} aria-hidden="true"/>{text}</li>)}</ul>}<Tags items={project.technologies.slice(0, featured ? 5 : 3)}/><div className="project-links"><Link className="project-link" href={`/projects/${project.slug}`} aria-label={`View case study: ${project.name}`}>View case study<ArrowRight size={17} aria-hidden="true"/></Link>{project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live product<ArrowUpRight size={15} aria-hidden="true"/></a>}{project.githubUrl && <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">Source<ArrowUpRight size={15} aria-hidden="true"/></a>}</div></div>
-  </article>;
-}
-
 export function ProjectGallery() {
-  const [filter, setFilter] = useState("All work");
-  const reducedMotion = useReducedMotion();
-  const filtered = projects.filter((project) => filter === "All work" || project.group === filter);
-  return <><div className="project-toolbar"><div className="project-filters" aria-label="Filter projects">{["All work", "Products", "Tools", "Workflows"].map((item) => <button key={item} onClick={() => setFilter(item)} aria-pressed={item === filter}>{filter === item && <motion.span className="filter-background" layoutId="project-filter" transition={{ duration: reducedMotion ? 0 : .18 }}/>}<span>{item}</span></button>)}</div><p className="project-count" aria-live="polite">{filtered.length} selected projects</p></div><div className="project-grid">{filtered.map((project) => <ProjectCard key={project.slug} project={project} featured={project.slug === "crowhub"} />)}</div></>;
+  const project = featuredProject;
+  const shot = project.screenshots[0];
+  return <>
+    <article className={`project-card featured-project accent-${project.accent}`}>
+      <div className="project-preview project-preview-image">{shot && <Image src={shot.src} alt={shot.alt} width={1600} height={1000} sizes="(max-width: 1020px) 100vw, 640px" priority/>}</div>
+      <div className="project-body"><div className="project-meta"><span>{project.category}</span><span className="status status-live"><span/>Live · Edmonton and Calgary</span></div><h3>{project.name}</h3><p>{project.summary}</p><ul className="project-highlights">{["Designed, built, deployed, and operated solo", "Stripe Connect payments and QR-confirmed pickup", "Agent-written code, personally reviewed and released"].map((text) => <li key={text}><Check size={15} aria-hidden="true"/>{text}</li>)}</ul><Tags items={project.technologies.slice(0, 5)}/><div className="project-links"><Link className="project-link" href={`/projects/${project.slug}`} aria-label={`View case study: ${project.name}`}>Read the case study<ArrowRight size={17} aria-hidden="true"/></Link>{project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live product<ArrowUpRight size={15} aria-hidden="true"/></a>}</div></div>
+    </article>
+    <div className="project-row-heading"><h3>Also built</h3><p>Smaller products, tools, and workflows.</p></div>
+    <div className="project-row">{otherProjects.map((other) => <Link href={`/projects/${other.slug}`} key={other.slug} className={`project-mini accent-${other.accent}`} aria-label={`View case study: ${other.name}`}><span className="project-mini-top"><small>{other.category}</small>{other.githubUrl && <small className="project-mini-badge">Open source</small>}</span><strong>{other.name}</strong><p>{other.summary}</p><span className="project-mini-stack">{other.technologies.slice(0, 4).join(" · ")}</span></Link>)}</div>
+  </>;
 }

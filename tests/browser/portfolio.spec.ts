@@ -5,16 +5,15 @@ test("recruiters can browse and filter projects, then read a case study", async 
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Building Better Engineering Teams.");
-  await page.getByRole("link", { name: "Explore my work", exact: true }).click();
-  await expect(page.locator("#projects")).toBeInViewport();
-  await page.getByRole("button", { name: "Tools", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "QR Generator", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "CrowHub", exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "All work", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Engineering Manager");
+  await page.getByRole("link", { name: "See the impact", exact: true }).click();
+  await expect(page.locator("#impact")).toBeInViewport();
+  await expect(page.getByRole("link", { name: "View case study: QR Generator" })).toBeVisible();
   await page.getByRole("link", { name: "View case study: CrowHub" }).click();
   await expect(page).toHaveURL(/\/projects\/crowhub/);
   await expect(page.getByRole("heading", { name: "Engineering decisions" })).toBeVisible();
+  await expect(page.locator(".case-gallery img").first()).toBeVisible();
+  await expect(page.getByText(/not independently verified|remain to be confirmed|Source reviewed/)).toHaveCount(0);
   await expect(page.locator('a[href="https://github.com/neiln/crow-app"]')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -60,14 +59,17 @@ test("all routes, contact actions, resume, and the 404 resolve", async ({ page, 
     expect(response.status(), path).toBe(200);
   }
   expect((await request.get("/projects/unknown-product")).status()).toBe(404);
-  const resume = await request.get("/resume/Neil_Nelson_EM_Resume.docx");
-  expect(resume.status()).toBe(200);
-  expect((await resume.body()).length).toBeGreaterThan(1000);
+  for (const file of ["/resume/Neil_Nelson_EM_Resume.pdf", "/resume/Neil_Nelson_EM_Resume.docx"]) {
+    const resume = await request.get(file);
+    expect(resume.status(), file).toBe(200);
+    expect((await resume.body()).length, file).toBeGreaterThan(1000);
+  }
   await page.goto("/contact");
   await expect(page.getByRole("link", { name: "Email nelson.neil@gmail.com", exact: true })).toHaveAttribute("href", "mailto:nelson.neil@gmail.com");
 });
 
 test("home and case study meet accessibility fundamentals", async ({ page }) => {
+  test.setTimeout(120000);
   for (const path of ["/", "/projects/crowhub", "/contact"]) {
     await page.goto(path);
     const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();

@@ -46,3 +46,7 @@ Vendor Hub: Prisma schema, registration route, admin status route, admin session
 - No Git repository existed in this folder, so no commits or worktrees were created.
 - No screenshots, logos, customer counts, commercial outcomes, job facts, or URLs were invented.
 - Project trade-offs are explained from reviewed implementation; unrecorded personal rationale or claimed lessons are not attributed as historical facts.
+
+## November 13, 2026 revision
+
+Positioning was reworked for an Engineering Manager search. Facts added from the candidate directly: seven engineers led (three senior, two intermediate, one SQL developer and one DevOps engineer who later moved to SRE), four hires, one Intermediate-to-Senior promotion, the three Absorb "products" being internal customer-onboarding platforms (scheduled imports/exports, a custom integration service, data migration), the role ending in a 2026 restructuring, and availability as remote across Canada. The bare 99% uptime figure was removed and the memory-depletion work is told as an incident story. CrowHub screenshots were captured from thecrowhub.com on November 13, 2026, which also showed the product live in Edmonton and Calgary with seller subscription plans and AI-written listings. Audit and verification language is intentionally kept out of rendered pages; it lives here.
